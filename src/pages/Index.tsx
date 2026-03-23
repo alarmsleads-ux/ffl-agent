@@ -1,3 +1,4 @@
+import TrustBar from "@/components/TrustBar";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import CredentialsSection from "@/components/CredentialsSection";
@@ -10,6 +11,7 @@ import Footer from "@/components/Footer";
 export default function Index() {
   return (
     <div className="min-h-screen">
+      <TrustBar />
       <Header />
       <HeroSection />
       <CredentialsSection />
