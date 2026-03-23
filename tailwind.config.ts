@@ -50,6 +50,7 @@ export default {
         sand: "hsl(var(--sand))",
         "warm-white": "hsl(var(--warm-white))",
         "gold-star": "hsl(var(--gold-star))",
+        gold: "hsl(var(--gold))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

@@ -1,8 +1,8 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import CredentialsSection from "@/components/CredentialsSection";
 import AboutSection from "@/components/AboutSection";
 import ServicesSection from "@/components/ServicesSection";
-import CredentialsSection from "@/components/CredentialsSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
@@ -12,9 +12,9 @@ export default function Index() {
     <div className="min-h-screen">
       <Header />
       <HeroSection />
+      <CredentialsSection />
       <AboutSection />
       <ServicesSection />
-      <CredentialsSection />
       <TestimonialsSection />
       <ContactSection />
       <Footer />
