@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode } from "react";
 
 export interface AgentData {
   name: string;
@@ -7,9 +7,7 @@ export interface AgentData {
   phone: string;
   email: string;
   npn: string;
-  bio1: string;
-  bio2: string;
-  bio3: string;
+  bio: string;
   shortBio: string;
   headshotUrl: string;
   calendarUrl: string;
@@ -21,12 +19,10 @@ const DEFAULT_DATA: AgentData = {
   name: "Marcus Rivera",
   firstName: "Marcus",
   lastName: "Rivera",
-  phone: "+15558142937",
+  phone: "(555) 814-2937",
   email: "marcus@riverainsurance.com",
   npn: "18294756",
-  bio1: "Growing up, my family didn't have a financial safety net. When my father passed unexpectedly, I saw firsthand how the absence of proper planning can turn grief into a financial crisis overnight. That experience shaped everything I do today.",
-  bio2: "I became a licensed life insurance professional not to sell policies — but to make sure no family has to face what mine did. Every conversation I have starts with listening: understanding your goals, your worries, and the people counting on you.",
-  bio3: "Whether you're a new parent looking for your first term policy or a business owner planning for the long term, I'm here to guide you through the options in plain language — no jargon, no pressure, just honest advice.",
+  bio: "Growing up, my family didn't have a financial safety net. When my father passed unexpectedly, I saw firsthand how the absence of proper planning can turn grief into a financial crisis overnight. That experience shaped everything I do today. I became a licensed life insurance professional not to sell policies — but to make sure no family has to face what mine did. Every conversation I have starts with listening: understanding your goals, your worries, and the people counting on you. Whether you're a new parent looking for your first term policy or a business owner planning for the long term, I'm here to guide you through the options in plain language — no jargon, no pressure, just honest advice.",
   shortBio: "Licensed life insurance professional helping families across the country find the right coverage. I believe everyone deserves a plan they can understand and trust.",
   headshotUrl: "",
   calendarUrl: "#contact",
@@ -63,7 +59,17 @@ export function AgentDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AgentData>(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) return { ...DEFAULT_DATA, ...JSON.parse(stored) };
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        // Migrate old bio1/bio2/bio3 to single bio
+        if (parsed.bio1 && !parsed.bio) {
+          parsed.bio = [parsed.bio1, parsed.bio2, parsed.bio3].filter(Boolean).join(" ");
+          delete parsed.bio1;
+          delete parsed.bio2;
+          delete parsed.bio3;
+        }
+        return { ...DEFAULT_DATA, ...parsed };
+      }
     } catch {}
     return DEFAULT_DATA;
   });
