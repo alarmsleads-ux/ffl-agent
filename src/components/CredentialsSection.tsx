@@ -43,6 +43,7 @@ export default function CredentialsSection() {
         <h2 className="text-balance text-center text-3xl font-bold tracking-tight text-foreground md:text-4xl">
           Licenses & Credentials
         </h2>
+        <div className="mx-auto mt-3 h-1 w-12 rounded-full bg-accent" />
         <p className="mx-auto mt-4 max-w-lg text-center text-muted-foreground">
           I am a fully licensed and regulated insurance professional, committed
           to the highest standards of transparency and service.

@@ -12,6 +12,7 @@ export default function ContactSection() {
         <h2 className="text-balance text-center text-3xl font-bold tracking-tight text-foreground md:text-4xl">
           Let's Build Your Plan
         </h2>
+        <div className="mx-auto mt-3 h-1 w-12 rounded-full bg-accent" />
 
         <div className="mt-12 grid gap-10 md:grid-cols-2 md:gap-16">
           {/* Left — CTA + Contact Info */}
