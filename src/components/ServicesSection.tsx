@@ -66,7 +66,7 @@ function ServiceCard({
       ref={ref}
       className="group rounded-2xl bg-background p-7 shadow-sm ring-1 ring-border/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:ring-accent"
     >
-      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+      <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-accent group-hover:text-accent-foreground">
         <Icon size={22} />
       </div>
       <h3 className="text-lg font-semibold text-foreground">{service.title}</h3>
