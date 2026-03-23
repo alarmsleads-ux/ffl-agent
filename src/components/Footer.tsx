@@ -1,6 +1,7 @@
 export default function Footer() {
   return (
     <footer className="border-t border-border bg-card py-10">
+      <div className="mx-auto mb-8 h-1 w-12 rounded-full bg-accent" />
       <div className="container text-center">
         <p className="text-sm font-medium text-foreground">
           © {new Date().getFullYear()} Marcus Rivera — Licensed Life Insurance
