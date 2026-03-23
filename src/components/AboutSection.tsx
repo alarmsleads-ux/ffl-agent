@@ -1,3 +1,5 @@
+import { Phone, Mail, MessageSquare } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 export default function AboutSection() {
@@ -35,6 +37,33 @@ export default function AboutSection() {
         <p className="mt-10 text-center font-signature text-3xl text-foreground">
           Marcus Rivera
         </p>
+
+        {/* Contact buttons */}
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
+          <Button variant="outline" size="lg" asChild>
+            <a href="tel:+15558142937">
+              <Phone size={16} />
+              Call
+            </a>
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <a href="sms:+15558142937">
+              <MessageSquare size={16} />
+              Text
+            </a>
+          </Button>
+          <Button variant="outline" size="lg" asChild>
+            <a href="mailto:marcus@riverainsurance.com">
+              <Mail size={16} />
+              Email
+            </a>
+          </Button>
+        </div>
+
+        <div className="mt-5 flex flex-col items-center gap-2 text-sm text-muted-foreground">
+          <a href="tel:+15558142937" className="hover:text-foreground transition-colors">(555) 814-2937</a>
+          <a href="mailto:marcus@riverainsurance.com" className="hover:text-foreground transition-colors">marcus@riverainsurance.com</a>
+        </div>
       </div>
     </section>
   );
