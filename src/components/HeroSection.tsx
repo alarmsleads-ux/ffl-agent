@@ -1,4 +1,4 @@
-import { CalendarDays } from "lucide-react";
+import { Phone, Mail, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAgentData } from "@/contexts/AgentDataContext";
 import agentPhotoDefault from "@/assets/agent-headshot.jpg";
@@ -6,6 +6,15 @@ import agentPhotoDefault from "@/assets/agent-headshot.jpg";
 export default function HeroSection() {
   const { data } = useAgentData();
   const photo = data.headshotUrl || agentPhotoDefault;
+
+  const formatPhone = (phone: string) => {
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length === 11 && digits[0] === "1")
+      return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
+    if (digits.length === 10)
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    return phone;
+  };
 
   return (
     <section className="relative overflow-hidden pb-10 pt-14 md:pt-20">
@@ -37,15 +46,36 @@ export default function HeroSection() {
           className="mt-7 flex flex-wrap justify-center gap-3 animate-reveal"
           style={{ animationDelay: "300ms" }}
         >
-          <Button variant="hero" size="lg" asChild>
-            <a href={data.calendarUrl}>
-              <CalendarDays size={17} />
-              See My Calendar
+          <Button variant="outline" size="lg" asChild>
+            <a href={`tel:${data.phone}`}>
+              <Phone size={16} />
+              Call
             </a>
           </Button>
-          <Button variant="hero-outline" size="lg" asChild>
-            <a href="#about">More About Me</a>
+          <Button variant="outline" size="lg" asChild>
+            <a href={`sms:${data.phone}`}>
+              <MessageSquare size={16} />
+              Text
+            </a>
           </Button>
+          <Button variant="outline" size="lg" asChild>
+            <a href={`mailto:${data.email}`}>
+              <Mail size={16} />
+              Email
+            </a>
+          </Button>
+        </div>
+
+        <div
+          className="mt-4 flex flex-col items-center gap-1.5 text-sm text-muted-foreground animate-reveal"
+          style={{ animationDelay: "400ms" }}
+        >
+          <a href={`tel:${data.phone}`} className="transition-colors hover:text-foreground">
+            {formatPhone(data.phone)}
+          </a>
+          <a href={`mailto:${data.email}`} className="transition-colors hover:text-foreground">
+            {data.email}
+          </a>
         </div>
       </div>
     </section>

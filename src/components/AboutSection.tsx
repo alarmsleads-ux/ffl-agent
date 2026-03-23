@@ -1,22 +1,9 @@
-import { Phone, Mail, MessageSquare } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { useAgentData } from "@/contexts/AgentDataContext";
 
 export default function AboutSection() {
   const ref = useScrollReveal();
   const { data } = useAgentData();
-
-  const formatPhone = (phone: string) => {
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length === 11 && digits[0] === "1") {
-      return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
-    }
-    if (digits.length === 10) {
-      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-    }
-    return phone;
-  };
 
   return (
     <section id="about" className="py-20 md:py-28">
@@ -34,35 +21,6 @@ export default function AboutSection() {
           {data.name}
         </p>
 
-        <div className="mt-8 flex flex-wrap justify-center gap-3">
-          <Button variant="outline" size="lg" asChild>
-            <a href={`tel:${data.phone}`}>
-              <Phone size={16} />
-              Call
-            </a>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <a href={`sms:${data.phone}`}>
-              <MessageSquare size={16} />
-              Text
-            </a>
-          </Button>
-          <Button variant="outline" size="lg" asChild>
-            <a href={`mailto:${data.email}`}>
-              <Mail size={16} />
-              Email
-            </a>
-          </Button>
-        </div>
-
-        <div className="mt-5 flex flex-col items-center gap-2 text-sm text-muted-foreground">
-          <a href={`tel:${data.phone}`} className="hover:text-foreground transition-colors">
-            {formatPhone(data.phone)}
-          </a>
-          <a href={`mailto:${data.email}`} className="hover:text-foreground transition-colors">
-            {data.email}
-          </a>
-        </div>
       </div>
     </section>
   );

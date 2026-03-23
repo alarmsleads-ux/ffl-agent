@@ -36,7 +36,7 @@ export default function CredentialsSection() {
             {data.stateLicenses.map((lic) =>
             <span
               key={lic}
-              className="inline-block rounded-full bg-card px-3.5 py-1.5 text-xs font-medium text-foreground ring-1 ring-border">
+              className="inline-block rounded-full bg-card px-3.5 py-1.5 text-xs font-medium text-foreground ring-1 ring-border transition-colors duration-200 hover:bg-accent hover:text-accent-foreground hover:ring-accent">
               
                 {lic}
               </span>
