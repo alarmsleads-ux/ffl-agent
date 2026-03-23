@@ -2,9 +2,11 @@ import { useState } from "react";
 import { CalendarDays, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
+import { useAgentData } from "@/contexts/AgentDataContext";
 
 export default function ContactSection() {
   const ref = useScrollReveal();
+  const { data } = useAgentData();
 
   return (
     <section id="contact" className="py-20 md:py-28">
@@ -15,17 +17,15 @@ export default function ContactSection() {
         <div className="mx-auto mt-3 h-1 w-12 rounded-full bg-accent" />
 
         <div className="mt-12 grid gap-10 md:grid-cols-2 md:gap-16">
-          {/* Left — CTA */}
           <div className="flex flex-col justify-center">
             <Button variant="hero" size="xl" className="w-full md:w-fit" asChild>
-              <a href="#contact">
+              <a href={data.calendarUrl}>
                 <CalendarDays size={20} />
                 Book on My Calendar
               </a>
             </Button>
           </div>
 
-          {/* Right — Contact Form */}
           <ContactForm />
         </div>
       </div>
@@ -45,9 +45,9 @@ function ContactForm() {
       onSubmit={(e) => e.preventDefault()}
       className="space-y-4 rounded-2xl bg-card p-7 shadow-sm ring-1 ring-border/60"
     >
-      <Input name="name" placeholder="Your Name" value={form.name} onChange={handleChange} />
-      <Input name="email" type="email" placeholder="Email Address" value={form.email} onChange={handleChange} />
-      <Input name="phone" type="tel" placeholder="Phone (optional)" value={form.phone} onChange={handleChange} />
+      <FormInput name="name" placeholder="Your Name" value={form.name} onChange={handleChange} />
+      <FormInput name="email" type="email" placeholder="Email Address" value={form.email} onChange={handleChange} />
+      <FormInput name="phone" type="tel" placeholder="Phone (optional)" value={form.phone} onChange={handleChange} />
       <textarea
         name="message"
         rows={4}
@@ -64,7 +64,7 @@ function ContactForm() {
   );
 }
 
-function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+function FormInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <input
       {...props}

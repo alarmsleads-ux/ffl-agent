@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAgentData } from "@/contexts/AgentDataContext";
 
 const navLinks = [
   { label: "About", href: "#about" },
@@ -12,16 +13,18 @@ const navLinks = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { data } = useAgentData();
+  const nameParts = data.name.split(" ");
+  const firstName = nameParts[0] || "";
+  const rest = nameParts.slice(1).join(" ");
 
   return (
     <header className="sticky top-[34px] z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between">
-        {/* Logo / Name */}
         <a href="#" className="text-xl font-bold tracking-tight text-foreground">
-          Marcus <span className="text-primary">Rivera</span>
+          {firstName} <span className="text-primary">{rest}</span>
         </a>
 
-        {/* Desktop Nav */}
         <nav className="hidden items-center gap-8 md:flex">
           {navLinks.map((l) => (
             <a
@@ -39,7 +42,6 @@ export default function Header() {
             <a href="#contact">Book a Call</a>
           </Button>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-foreground transition-colors hover:bg-accent md:hidden"
@@ -50,7 +52,6 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       {mobileOpen && (
         <div className="border-t border-border bg-background px-6 pb-6 pt-4 md:hidden">
           <nav className="flex flex-col gap-4">
