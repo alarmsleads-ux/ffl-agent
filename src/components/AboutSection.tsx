@@ -9,6 +9,7 @@ export default function AboutSection() {
         <h2 className="text-balance text-center text-3xl font-bold tracking-tight text-foreground md:text-4xl">
           Meet Marcus Rivera
         </h2>
+        <div className="mx-auto mt-3 h-1 w-12 rounded-full bg-accent" />
 
         <div className="mt-8 space-y-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
           <p>

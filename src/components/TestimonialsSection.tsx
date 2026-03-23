@@ -37,12 +37,12 @@ export default function TestimonialsSection() {
 function Heading() {
   const ref = useScrollReveal();
   return (
-    <h2
-      ref={ref}
-      className="text-balance text-center text-3xl font-bold tracking-tight text-foreground md:text-4xl"
-    >
-      What Families Are Saying
-    </h2>
+    <div ref={ref} className="text-center">
+      <h2 className="text-balance text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+        What Families Are Saying
+      </h2>
+      <div className="mx-auto mt-3 h-1 w-12 rounded-full bg-accent" />
+    </div>
   );
 }
 
