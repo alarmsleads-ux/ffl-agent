@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CalendarDays, Phone, Mail, Send, MessageSquare } from "lucide-react";
+import { CalendarDays, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
