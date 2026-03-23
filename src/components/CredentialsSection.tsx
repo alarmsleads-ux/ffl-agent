@@ -50,34 +50,30 @@ export default function CredentialsSection() {
         </p>
 
         {/* NPN Badge */}
-        <div className="mx-auto mt-10 flex w-fit items-center gap-3 rounded-2xl bg-primary/10 px-7 py-4">
-          <BadgeCheck className="text-primary" size={28} />
-          <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-              National Producer Number
-            </p>
-            <p className="text-2xl font-bold tabular-nums text-foreground">
-              18294756
-            </p>
-          </div>
+        <div className="mx-auto mt-10 flex flex-col items-center gap-1">
+          <BadgeCheck className="text-accent" size={32} />
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
+            National Producer Number
+          </p>
+          <p className="text-3xl font-bold tabular-nums text-foreground">
+            18294756
+          </p>
         </div>
 
         {/* State Licenses */}
         <div className="mt-10">
-          <p className="mb-4 text-center text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+          <p className="mb-5 text-center text-sm font-semibold uppercase tracking-widest text-muted-foreground">
             State Licenses
           </p>
-          <div className="mx-auto max-h-52 overflow-y-auto rounded-2xl bg-card p-5 shadow-inner ring-1 ring-border/50">
-            <div className="flex flex-wrap gap-2">
-              {stateLicenses.map((lic) => (
-                <span
-                  key={lic}
-                  className="inline-block rounded-full bg-background px-3.5 py-1.5 text-xs font-medium text-foreground ring-1 ring-border"
-                >
-                  {lic}
-                </span>
-              ))}
-            </div>
+          <div className="flex flex-wrap justify-center gap-2">
+            {stateLicenses.map((lic) => (
+              <span
+                key={lic}
+                className="inline-block rounded-full bg-card px-3.5 py-1.5 text-xs font-medium text-foreground ring-1 ring-border"
+              >
+                {lic}
+              </span>
+            ))}
           </div>
         </div>
       </div>
