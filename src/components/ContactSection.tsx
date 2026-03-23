@@ -25,14 +25,35 @@ export default function ContactSection() {
             </Button>
 
             <div className="mt-10 space-y-4">
-              <div className="flex items-center gap-3 text-muted-foreground">
+              <a href="tel:+15558142937" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
                 <Phone size={18} className="text-primary" />
                 <span className="text-sm">(555) 814-2937</span>
-              </div>
-              <div className="flex items-center gap-3 text-muted-foreground">
+              </a>
+              <a href="mailto:marcus@riverainsurance.com" className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors">
                 <Mail size={18} className="text-primary" />
                 <span className="text-sm">marcus@riverainsurance.com</span>
-              </div>
+              </a>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button variant="outline" size="lg" asChild>
+                <a href="tel:+15558142937">
+                  <Phone size={16} />
+                  Call
+                </a>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <a href="sms:+15558142937">
+                  <MessageSquare size={16} />
+                  Text
+                </a>
+              </Button>
+              <Button variant="outline" size="lg" asChild>
+                <a href="mailto:marcus@riverainsurance.com">
+                  <Mail size={16} />
+                  Email
+                </a>
+              </Button>
             </div>
           </div>
 
