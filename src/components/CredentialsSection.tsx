@@ -7,7 +7,7 @@ export default function CredentialsSection() {
   const { data } = useAgentData();
 
   return (
-    <section id="credentials" className="py-20 md:py-28">
+    <section id="credentials" className="md:py-28 py-[15px]">
       <div className="container max-w-3xl" ref={ref}>
         <h2 className="text-balance text-center text-3xl font-bold tracking-tight text-foreground md:text-4xl">
           Licenses & Credentials
@@ -33,17 +33,17 @@ export default function CredentialsSection() {
             State Licenses
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            {data.stateLicenses.map((lic) => (
-              <span
-                key={lic}
-                className="inline-block rounded-full bg-card px-3.5 py-1.5 text-xs font-medium text-foreground ring-1 ring-border"
-              >
+            {data.stateLicenses.map((lic) =>
+            <span
+              key={lic}
+              className="inline-block rounded-full bg-card px-3.5 py-1.5 text-xs font-medium text-foreground ring-1 ring-border">
+              
                 {lic}
               </span>
-            ))}
+            )}
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>);
+
 }
