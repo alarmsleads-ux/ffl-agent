@@ -12,6 +12,9 @@ export default function AboutSection() {
     if (digits.length === 11 && digits[0] === "1") {
       return `(${digits.slice(1, 4)}) ${digits.slice(4, 7)}-${digits.slice(7)}`;
     }
+    if (digits.length === 10) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
+    }
     return phone;
   };
 
@@ -24,9 +27,7 @@ export default function AboutSection() {
         <div className="mx-auto mt-3 h-1 w-12 rounded-full bg-accent" />
 
         <div className="mt-8 space-y-5 text-pretty text-base leading-relaxed text-muted-foreground md:text-lg">
-          {data.bio1 && <p>{data.bio1}</p>}
-          {data.bio2 && <p>{data.bio2}</p>}
-          {data.bio3 && <p>{data.bio3}</p>}
+          {data.bio && <p>{data.bio}</p>}
         </div>
 
         <p className="mt-10 text-center font-signature text-3xl text-foreground">
