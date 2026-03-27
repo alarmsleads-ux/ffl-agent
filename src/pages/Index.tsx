@@ -5,6 +5,8 @@ import CredentialsSection from "@/components/CredentialsSection";
 import AboutSection from "@/components/AboutSection";
 import ServicesSection from "@/components/ServicesSection";
 import TestimonialsSection from "@/components/TestimonialsSection";
+import LeadCaptureSection from "@/components/LeadCaptureSection";
+import LegalSection from "@/components/LegalSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 
@@ -18,6 +20,8 @@ export default function Index() {
       <AboutSection />
       <ServicesSection />
       <TestimonialsSection />
+      <LeadCaptureSection />
+      <LegalSection />
       <ContactSection />
       <Footer />
     </div>
