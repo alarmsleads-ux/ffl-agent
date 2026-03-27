@@ -6,6 +6,7 @@ export interface AgentData {
   lastName: string;
   phone: string;
   email: string;
+  agency: string;
   npn: string;
   bio: string;
   shortBio: string;
