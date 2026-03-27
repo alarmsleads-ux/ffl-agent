@@ -7,6 +7,7 @@ import { AgentDataProvider } from "@/contexts/AgentDataContext";
 import Index from "./pages/Index.tsx";
 import Admin from "./pages/Admin.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import SmsOptIn from "./pages/SmsOptIn.tsx";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +21,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/agent-admin" element={<Admin />} />
+            <Route path="/sms-opt-in" element={<SmsOptIn />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
