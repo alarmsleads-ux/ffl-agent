@@ -35,6 +35,15 @@ export default function HeroSection() {
           {data.name}
         </h1>
 
+        {data.agency && (
+          <p
+            className="mt-1 text-sm font-medium text-accent animate-reveal"
+            style={{ animationDelay: "150ms" }}
+          >
+            {data.agency}
+          </p>
+        )}
+
         <p
           className="text-pretty mx-auto mt-3 max-w-md text-base leading-relaxed text-muted-foreground animate-reveal"
           style={{ animationDelay: "200ms" }}

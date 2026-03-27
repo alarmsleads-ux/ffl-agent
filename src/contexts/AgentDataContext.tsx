@@ -6,6 +6,7 @@ export interface AgentData {
   lastName: string;
   phone: string;
   email: string;
+  agency: string;
   npn: string;
   bio: string;
   shortBio: string;
@@ -21,6 +22,7 @@ const DEFAULT_DATA: AgentData = {
   lastName: "Rivera",
   phone: "(555) 814-2937",
   email: "marcus@riverainsurance.com",
+  agency: "Rivera Insurance Group",
   npn: "18294756",
   bio: "Growing up, my family didn't have a financial safety net. When my father passed unexpectedly, I saw firsthand how the absence of proper planning can turn grief into a financial crisis overnight. That experience shaped everything I do today. I became a licensed life insurance professional not to sell policies — but to make sure no family has to face what mine did. Every conversation I have starts with listening: understanding your goals, your worries, and the people counting on you. Whether you're a new parent looking for your first term policy or a business owner planning for the long term, I'm here to guide you through the options in plain language — no jargon, no pressure, just honest advice.",
   shortBio: "Licensed life insurance professional helping families across the country find the right coverage. I believe everyone deserves a plan they can understand and trust.",

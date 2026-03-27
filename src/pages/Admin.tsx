@@ -178,6 +178,9 @@ export default function Admin() {
           <Field label="Email">
             <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
           </Field>
+          <Field label="Agency Name">
+            <Input value={form.agency} onChange={(e) => set("agency", e.target.value)} placeholder="e.g. Rivera Insurance Group" />
+          </Field>
           <Field label="Calendar Booking URL">
             <Input value={form.calendarUrl} onChange={(e) => set("calendarUrl", e.target.value)} placeholder="https://calendly.com/..." />
           </Field>
