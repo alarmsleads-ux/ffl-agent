@@ -14,7 +14,66 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      agents: {
+        Row: {
+          agency: string
+          bio: string
+          calendar_url: string
+          created_at: string
+          email: string
+          first_name: string
+          headshot_url: string
+          id: string
+          last_name: string
+          name: string
+          npn: string
+          phone: string
+          short_bio: string
+          slug: string
+          state_licenses: Json
+          testimonials: Json
+          updated_at: string
+        }
+        Insert: {
+          agency?: string
+          bio?: string
+          calendar_url?: string
+          created_at?: string
+          email?: string
+          first_name: string
+          headshot_url?: string
+          id?: string
+          last_name: string
+          name: string
+          npn?: string
+          phone?: string
+          short_bio?: string
+          slug: string
+          state_licenses?: Json
+          testimonials?: Json
+          updated_at?: string
+        }
+        Update: {
+          agency?: string
+          bio?: string
+          calendar_url?: string
+          created_at?: string
+          email?: string
+          first_name?: string
+          headshot_url?: string
+          id?: string
+          last_name?: string
+          name?: string
+          npn?: string
+          phone?: string
+          short_bio?: string
+          slug?: string
+          state_licenses?: Json
+          testimonials?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

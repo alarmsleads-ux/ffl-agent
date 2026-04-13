@@ -1,3 +1,7 @@
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useAgentProfile } from "@/hooks/useAgentProfile";
+import { useAgentData } from "@/contexts/AgentDataContext";
 import TrustBar from "@/components/TrustBar";
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
@@ -9,8 +13,35 @@ import LeadCaptureSection from "@/components/LeadCaptureSection";
 import LegalSection from "@/components/LegalSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import { Loader2 } from "lucide-react";
 
 export default function Index() {
+  const { slug } = useParams<{ slug: string }>();
+  const { data: agent, isLoading, error } = useAgentProfile(slug);
+  const { updateData } = useAgentData();
+
+  // Populate context so all child components read from it
+  useEffect(() => {
+    if (agent) updateData(agent);
+  }, [agent]);
+
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-accent" />
+      </div>
+    );
+  }
+
+  if (error || !agent) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 text-center">
+        <h1 className="text-2xl font-bold text-foreground">Agent Not Found</h1>
+        <p className="text-muted-foreground">The agent profile you're looking for doesn't exist.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen">
       <TrustBar />

@@ -34,7 +34,7 @@ export default function Landing() {
             Confirm your agent is properly licensed, credentialed, and affiliated with a legitimate agency — before you sign anything.
           </p>
           <Button variant="hero" size="xl" className="mt-10 gap-2" asChild>
-            <Link to="/agent">
+            <Link to="/agent/christopher-garness">
               Verify an Agent <ArrowRight className="h-5 w-5" />
             </Link>
           </Button>
@@ -132,7 +132,7 @@ export default function Landing() {
             Licensed agents who share their verification page are transparent about their credentials. That's the kind of professional you want protecting your family's future.
           </p>
           <Button variant="hero" size="xl" className="mt-8 gap-2" asChild>
-            <Link to="/agent">
+            <Link to="/agent/christopher-garness">
               View Agent Profile <ArrowRight className="h-5 w-5" />
             </Link>
           </Button>
