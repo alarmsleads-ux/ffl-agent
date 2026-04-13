@@ -21,7 +21,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/agent" element={<Index />} />
+            <Route path="/agent/:slug" element={<Index />} />
             <Route path="/agent-admin" element={<Admin />} />
             <Route path="/sms-opt-in" element={<SmsOptIn />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
