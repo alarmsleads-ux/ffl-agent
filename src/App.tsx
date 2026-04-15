@@ -6,10 +6,10 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AgentDataProvider } from "@/contexts/AgentDataContext";
 import Landing from "./pages/Landing.tsx";
 import Index from "./pages/Index.tsx";
+import Search from "./pages/Search.tsx";
 import Admin from "./pages/Admin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SmsOptIn from "./pages/SmsOptIn.tsx";
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -21,8 +21,9 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/agent/:slug" element={<Index />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/agent-admin" element={<Admin />} />
+            <Route path="/:agencySlug/:agentSlug" element={<Index />} />
             <Route path="/sms-opt-in" element={<SmsOptIn />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

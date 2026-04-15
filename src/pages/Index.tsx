@@ -16,8 +16,8 @@ import Footer from "@/components/Footer";
 import { Loader2 } from "lucide-react";
 
 export default function Index() {
-  const { slug } = useParams<{ slug: string }>();
-  const { data: agent, isLoading, error } = useAgentProfile(slug);
+  const { agencySlug, agentSlug } = useParams<{ agencySlug: string; agentSlug: string }>();
+  const { data: agent, isLoading, error } = useAgentProfile(agencySlug, agentSlug);
   const { updateData } = useAgentData();
 
   // Populate context so all child components read from it

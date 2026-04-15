@@ -2,16 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import type { AgentData } from "@/contexts/AgentDataContext";
 
-export function useAgentProfile(slug: string | undefined) {
+export function useAgentProfile(agencySlug: string | undefined, agentSlug: string | undefined) {
   return useQuery({
-    queryKey: ["agent", slug],
+    queryKey: ["agent", agencySlug, agentSlug],
     queryFn: async (): Promise<AgentData> => {
-      if (!slug) throw new Error("No agent slug provided");
+      if (!agencySlug || !agentSlug) throw new Error("No agent slug provided");
 
       const { data, error } = await supabase
         .from("agents")
         .select("*")
-        .eq("slug", slug)
+        .eq("agency_slug", agencySlug)
+        .eq("slug", agentSlug)
         .maybeSingle();
 
       if (error) throw error;
@@ -33,6 +34,6 @@ export function useAgentProfile(slug: string | undefined) {
         testimonials: data.testimonials as { quote: string; name: string }[],
       };
     },
-    enabled: !!slug,
+    enabled: !!agencySlug && !!agentSlug,
   });
 }
