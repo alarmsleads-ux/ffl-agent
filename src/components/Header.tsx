@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAgentData } from "@/contexts/AgentDataContext";
 
