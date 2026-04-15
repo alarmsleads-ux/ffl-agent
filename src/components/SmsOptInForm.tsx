@@ -24,14 +24,14 @@ import {
 import { CheckCircle } from "lucide-react";
 
 const US_STATES = [
-  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
-  "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
-  "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
-  "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire",
-  "New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio",
-  "Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota",
-  "Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia",
-  "Wisconsin","Wyoming",
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
+  "Delaware", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+  "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts", "Michigan",
+  "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire",
+  "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+  "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia",
+  "Wisconsin", "Wyoming",
 ];
 
 const phoneRegex = /^\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
@@ -42,7 +42,7 @@ const formSchema = z.object({
   phone: z.string().trim().min(1, "Phone number is required").regex(phoneRegex, "Enter a valid US phone number"),
   email: z.string().trim().min(1, "Email is required").email("Enter a valid email address").max(255),
   state: z.string().min(1, "Please select a state"),
-  smsConsent: z.boolean().default(false),
+  marketingConsent: z.boolean().default(false),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -58,7 +58,7 @@ const SmsOptInForm: React.FC = () => {
       phone: "",
       email: "",
       state: "",
-      smsConsent: false,
+      marketingConsent: false,
     },
   });
 
@@ -161,28 +161,48 @@ const SmsOptInForm: React.FC = () => {
           )}
         />
 
-        {/* SMS Consent — visually separated */}
         <div className="mt-8 pt-6 border-t border-border space-y-3">
           <FormField
             control={form.control}
-            name="smsConsent"
+            name="marketingConsent"
             render={({ field }) => (
               <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                 <FormControl>
                   <Checkbox
                     checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={(checked) => field.onChange(checked === true)}
                   />
                 </FormControl>
-                <Label className="text-sm font-normal leading-snug cursor-pointer" onClick={() => field.onChange(!field.value)}>
-                  I agree to receive SMS messages from Christopher W Garness / CG Financial
+                <Label
+                  className="text-sm font-normal leading-snug cursor-pointer"
+                  onClick={() => field.onChange(!field.value)}
+                >
+                  I agree to receive calls, SMS/MMS, and emails from CG Financial (optional).
                 </Label>
               </FormItem>
             )}
           />
 
           <p className="text-xs text-muted-foreground leading-relaxed">
-            By providing your phone number and checking the box above, you agree to receive SMS insurance updates, appointment reminders, and follow-up messages from Christopher W Garness / CG Financial. Message frequency may vary. Standard message and data rates may apply. Consent is not a condition of purchase. Reply STOP to opt out. Reply HELP for help. We will not share your mobile phone number with third parties for promotional or marketing purposes.
+            <strong>Opt In:</strong> By providing your phone number and email address, you expressly
+            consent to receive recurring automated marketing and informational text messages
+            (SMS/MMS), phone calls (including autodialed and prerecorded calls), and emails from CG
+            Financial (Christopher Garness) regarding life insurance quotes, policy updates,
+            appointment reminders, and promotional offers.
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Consent is not a condition of purchase. Message and data rates may apply. Message
+            frequency varies.
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            To opt out of SMS, reply STOP at any time. For help, reply HELP or contact us at
+            chris@fflagent.com or 909-775-6963.
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            View our Privacy Policy here:{" "}
+            <a href="/privacy-policy" className="underline underline-offset-2 hover:text-accent">
+              /privacy-policy
+            </a>
           </p>
         </div>
 
