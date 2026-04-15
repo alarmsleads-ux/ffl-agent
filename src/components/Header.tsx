@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAgentData } from "@/contexts/AgentDataContext";
 
@@ -14,6 +15,8 @@ const navLinks = [
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data } = useAgentData();
+  const { agencySlug, agentSlug } = useParams<{ agencySlug: string; agentSlug: string }>();
+  const bookUrl = agencySlug && agentSlug ? `/${agencySlug}/${agentSlug}/book` : "#contact";
   const nameParts = data.name.split(" ");
   const firstName = nameParts[0] || "";
   const rest = nameParts.slice(1).join(" ");
@@ -39,7 +42,7 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           <Button variant="hero" size="default" className="hidden md:inline-flex" asChild>
-            <a href="#contact">Book a Call</a>
+            <a href={bookUrl}>Book a Call</a>
           </Button>
 
           <button
@@ -66,7 +69,7 @@ export default function Header() {
               </a>
             ))}
             <Button variant="hero" size="lg" className="mt-2 w-full" asChild>
-              <a href="#contact" onClick={() => setMobileOpen(false)}>
+              <a href={bookUrl} onClick={() => setMobileOpen(false)}>
                 Book a Call
               </a>
             </Button>
