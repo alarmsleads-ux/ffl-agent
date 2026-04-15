@@ -17,6 +17,7 @@ export type Database = {
       agents: {
         Row: {
           agency: string
+          agency_slug: string
           bio: string
           calendar_url: string
           created_at: string
@@ -36,6 +37,7 @@ export type Database = {
         }
         Insert: {
           agency?: string
+          agency_slug?: string
           bio?: string
           calendar_url?: string
           created_at?: string
@@ -55,6 +57,7 @@ export type Database = {
         }
         Update: {
           agency?: string
+          agency_slug?: string
           bio?: string
           calendar_url?: string
           created_at?: string
