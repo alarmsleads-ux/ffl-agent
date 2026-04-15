@@ -11,6 +11,7 @@ import Admin from "./pages/Admin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SmsOptIn from "./pages/SmsOptIn.tsx";
 import BookCall from "./pages/BookCall.tsx";
+import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -26,7 +27,10 @@ const App = () => (
             <Route path="/agent-admin" element={<Admin />} />
             <Route path="/:agencySlug/:agentSlug" element={<Index />} />
             <Route path="/:agencySlug/:agentSlug/book" element={<BookCall />} />
+            <Route path="/:agencySlug/:agentSlug/bookcall" element={<BookCall />} />
+            <Route path="/:agencySlug/:agentSlug/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/sms-opt-in" element={<SmsOptIn />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
