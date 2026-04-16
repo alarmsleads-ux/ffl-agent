@@ -49,7 +49,6 @@ type FormValues = z.infer<typeof formSchema>;
 
 const SmsOptInForm: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {

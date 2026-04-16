@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,6 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { CheckCircle } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
 
 const phoneRegex = /^\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/;
 
@@ -37,6 +38,18 @@ interface BookCallFormProps {
 
 const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) => {
   const [submitted, setSubmitted] = useState(false);
+  const { agencySlug, agentSlug } = useParams<{ agencySlug: string; agentSlug: string }>();
+
+  const legalLinks = useMemo(() => {
+    if (!agencySlug || !agentSlug) {
+      return { privacy: "/privacy-policy", terms: "/terms" };
+    }
+
+    return {
+      privacy: `/${agencySlug}/${agentSlug}/privacy-policy`,
+      terms: `/${agencySlug}/${agentSlug}#terms`,
+    };
+  }, [agencySlug, agentSlug]);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -161,13 +174,13 @@ const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) =>
             condition of purchasing any goods or services. Message and data rates may apply. Message
             frequency may vary. I may revoke this consent at any time by replying STOP to any
             message or by contacting us directly. Reply HELP for help. I have read and agree to the{" "}
-            <a href="/privacy-policy" className="underline underline-offset-2 hover:text-accent">
+            <Link to={legalLinks.privacy} className="underline underline-offset-2 hover:text-accent">
               Privacy Policy
-            </a>{" "}
+            </Link>{" "}
             and{" "}
-            <a href="/terms" className="underline underline-offset-2 hover:text-accent">
+            <Link to={legalLinks.terms} className="underline underline-offset-2 hover:text-accent">
               Terms and Conditions
-            </a>
+            </Link>
             .
           </p>
         </div>

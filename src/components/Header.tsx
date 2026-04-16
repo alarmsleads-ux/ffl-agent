@@ -16,7 +16,7 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { data } = useAgentData();
   const { agencySlug, agentSlug } = useParams<{ agencySlug: string; agentSlug: string }>();
-  const bookUrl = agencySlug && agentSlug ? `/${agencySlug}/${agentSlug}/book` : "#contact";
+  const bookUrl = agencySlug && agentSlug ? `/${agencySlug}/${agentSlug}/bookcall` : "#contact";
   const nameParts = data.name.split(" ");
   const firstName = nameParts[0] || "";
   const rest = nameParts.slice(1).join(" ");

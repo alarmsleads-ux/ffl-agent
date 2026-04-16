@@ -48,11 +48,17 @@ export default function BookCall() {
             ← Back to Profile
           </Link>
           <span>·</span>
-          <Link to="/privacy-policy" className="hover:text-accent transition-colors underline-offset-4 hover:underline">
+          <Link
+            to={`/${agencySlug}/${agentSlug}/privacy-policy`}
+            className="hover:text-accent transition-colors underline-offset-4 hover:underline"
+          >
             Privacy Policy
           </Link>
           <span>·</span>
-          <Link to="/terms" className="hover:text-accent transition-colors underline-offset-4 hover:underline">
+          <Link
+            to={`/${agencySlug}/${agentSlug}#terms`}
+            className="hover:text-accent transition-colors underline-offset-4 hover:underline"
+          >
             Terms and Conditions
           </Link>
         </div>

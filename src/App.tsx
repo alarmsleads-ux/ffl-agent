@@ -27,6 +27,8 @@ const App = () => (
             <Route path="/agent-admin" element={<Admin />} />
             <Route path="/:agencySlug/:agentSlug" element={<Index />} />
             <Route path="/:agencySlug/:agentSlug/book" element={<BookCall />} />
+            <Route path="/:agencySlug/:agentSlug/bookcall" element={<BookCall />} />
+            <Route path="/:agencySlug/:agentSlug/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/sms-opt-in" element={<SmsOptIn />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
