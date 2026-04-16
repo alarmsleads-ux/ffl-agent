@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -22,7 +22,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { CheckCircle } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
@@ -50,16 +49,6 @@ type FormValues = z.infer<typeof formSchema>;
 
 const SmsOptInForm: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
-  const { agencySlug, agentSlug } = useParams<{ agencySlug: string; agentSlug: string }>();
-
-  const privacyPolicyHref = useMemo(() => {
-    if (!agencySlug || !agentSlug) {
-      return "/privacy-policy";
-    }
-
-    return `/${agencySlug}/${agentSlug}/privacy-policy`;
-  }, [agencySlug, agentSlug]);
-
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -210,9 +199,9 @@ const SmsOptInForm: React.FC = () => {
           </p>
           <p className="text-xs text-muted-foreground leading-relaxed">
             View our Privacy Policy here:{" "}
-            <Link to={privacyPolicyHref} className="underline underline-offset-2 hover:text-accent">
-              Privacy Policy
-            </Link>
+            <a href="/privacy-policy" className="underline underline-offset-2 hover:text-accent">
+              /privacy-policy
+            </a>
           </p>
         </div>
 
