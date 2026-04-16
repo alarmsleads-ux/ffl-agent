@@ -44,6 +44,8 @@ const slugify = (value: string) =>
     .trim()
     .replace(/\s+/g, "-");
 
+const ADMIN_AGENT_ID_KEY = "admin-agent-id";
+
 export default function Admin() {
   const { data, updateData } = useAgentData();
   const [form, setForm] = useState<AgentData>({ ...data });
@@ -55,20 +57,29 @@ export default function Admin() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [agentId, setAgentId] = useState<string | null>(null);
-  const [agentSlug, setAgentSlug] = useState<string | null>(null);
-  const [agencySlug, setAgencySlug] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadAgent = async () => {
       setLoadingProfile(true);
-      const { data: existingAgent, error } = await supabase
+
+      const rememberedAgentId = localStorage.getItem(ADMIN_AGENT_ID_KEY);
+
+      const byIdQuery = rememberedAgentId
+        ? supabase.from("agents").select("*").eq("id", rememberedAgentId).maybeSingle()
+        : Promise.resolve({ data: null, error: null });
+
+      const latestQuery = supabase
         .from("agents")
         .select("*")
         .order("updated_at", { ascending: false })
         .limit(1)
         .maybeSingle();
+
+      const [byIdResult, latestResult] = await Promise.all([byIdQuery, latestQuery]);
+      const existingAgent = byIdResult.data ?? latestResult.data;
+      const error = byIdResult.error ?? latestResult.error;
 
       if (error) {
         console.error(error);
@@ -93,9 +104,8 @@ export default function Admin() {
           stateLicenses: existingAgent.state_licenses as string[],
           testimonials: existingAgent.testimonials as { quote: string; name: string }[],
         };
+        localStorage.setItem(ADMIN_AGENT_ID_KEY, existingAgent.id);
         setAgentId(existingAgent.id);
-        setAgentSlug(existingAgent.slug);
-        setAgencySlug(existingAgent.agency_slug);
         setForm(loadedForm);
         setLicenses(loadedForm.stateLicenses.map(parseLicense));
         updateData(loadedForm);
@@ -145,6 +155,14 @@ export default function Admin() {
         .map(formatLicense),
     };
 
+    const nextAgentSlug = slugify(updatedForm.name);
+    const nextAgencySlug = slugify(updatedForm.agency);
+
+    if (!nextAgentSlug || !nextAgencySlug) {
+      toast.error("First name, last name, and agency are required before saving.");
+      return;
+    }
+
     setSavingProfile(true);
     try {
       const { data: persistedAgent, error } = await supabase
@@ -152,8 +170,8 @@ export default function Admin() {
         .upsert(
           {
             id: agentId ?? undefined,
-            slug: agentSlug ?? slugify(updatedForm.name),
-            agency_slug: agencySlug ?? slugify(updatedForm.agency),
+            slug: nextAgentSlug,
+            agency_slug: nextAgencySlug,
             name: updatedForm.name,
             first_name: updatedForm.firstName,
             last_name: updatedForm.lastName,
@@ -168,7 +186,7 @@ export default function Admin() {
             state_licenses: updatedForm.stateLicenses,
             testimonials: updatedForm.testimonials,
           },
-          { onConflict: "slug" }
+          { onConflict: "id" }
         )
         .select("id, slug, agency_slug")
         .single();
@@ -176,9 +194,8 @@ export default function Admin() {
       if (error) throw error;
 
       updateData(updatedForm);
+      localStorage.setItem(ADMIN_AGENT_ID_KEY, persistedAgent.id);
       setAgentId(persistedAgent.id);
-      setAgentSlug(persistedAgent.slug);
-      setAgencySlug(persistedAgent.agency_slug);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
       toast.success("Profile saved and persisted.");
