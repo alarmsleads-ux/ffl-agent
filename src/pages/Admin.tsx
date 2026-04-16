@@ -37,18 +37,10 @@ const formatPhoneInput = (value: string) => {
   return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6, 10)}`;
 };
 
-const slugify = (value: string) =>
-  value
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .trim()
-    .replace(/\s+/g, "-");
-
 export default function Admin() {
   const { data, updateData } = useAgentData();
   const [form, setForm] = useState<AgentData>({ ...data });
   const [saved, setSaved] = useState(false);
-  const [savingProfile, setSavingProfile] = useState(false);
   const [licenses, setLicenses] = useState<StateLicense[]>(
     data.stateLicenses.map(parseLicense)
   );
@@ -86,52 +78,16 @@ export default function Admin() {
     reader.readAsDataURL(file);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const updatedForm = {
       ...form,
       stateLicenses: licenses
         .filter((l) => l.state && l.number)
         .map(formatLicense),
     };
-
-    setSavingProfile(true);
-    try {
-      const { error } = await supabase
-        .from("agents")
-        .upsert(
-          {
-            slug: slugify(updatedForm.name),
-            agency_slug: slugify(updatedForm.agency),
-            name: updatedForm.name,
-            first_name: updatedForm.firstName,
-            last_name: updatedForm.lastName,
-            phone: updatedForm.phone,
-            email: updatedForm.email,
-            agency: updatedForm.agency,
-            npn: updatedForm.npn,
-            bio: updatedForm.bio,
-            short_bio: updatedForm.shortBio,
-            headshot_url: updatedForm.headshotUrl,
-            calendar_url: updatedForm.calendarUrl,
-            state_licenses: updatedForm.stateLicenses,
-            testimonials: updatedForm.testimonials,
-          },
-          { onConflict: "slug" }
-        );
-
-      if (error) throw error;
-
-      updateData(updatedForm);
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-      toast.success("Profile saved and persisted.");
-    } catch (err) {
-      console.error(err);
-      updateData(updatedForm);
-      toast.error("Cloud save failed. Changes were saved locally in this browser.");
-    } finally {
-      setSavingProfile(false);
-    }
+    updateData(updatedForm);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
   };
 
   // Licenses
@@ -191,9 +147,9 @@ export default function Admin() {
             Back to Site
           </button>
           <h1 className="text-lg font-bold text-foreground">Agent Dashboard</h1>
-          <Button onClick={handleSave} variant="hero" size="default" disabled={savingProfile}>
-            {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
-            {savingProfile ? "Saving..." : saved ? "Saved!" : "Save Changes"}
+          <Button onClick={handleSave} variant="hero" size="default">
+            {saved ? <Check size={16} /> : <Save size={16} />}
+            {saved ? "Saved!" : "Save Changes"}
           </Button>
         </div>
       </div>
@@ -346,9 +302,9 @@ export default function Admin() {
           </div>
         </Section>
 
-        <Button onClick={handleSave} variant="hero" size="lg" className="w-full" disabled={savingProfile}>
-          {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
-          {savingProfile ? "Saving..." : saved ? "Saved!" : "Save All Changes"}
+        <Button onClick={handleSave} variant="hero" size="lg" className="w-full">
+          {saved ? <Check size={16} /> : <Save size={16} />}
+          {saved ? "Saved!" : "Save All Changes"}
         </Button>
       </div>
     </div>
