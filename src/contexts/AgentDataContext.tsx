@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, ReactNode, useCallback, useMemo } from "react";
 
 export interface AgentData {
   name: string;
@@ -69,13 +69,21 @@ export function AgentDataProvider({ children }: { children: ReactNode }) {
     return DEFAULT_DATA;
   });
 
-  const updateData = (newData: AgentData) => {
+  const updateData = useCallback((newData: AgentData) => {
     setData(newData);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
-  };
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      data,
+      updateData,
+    }),
+    [data, updateData]
+  );
 
   return (
-    <AgentDataContext.Provider value={{ data, updateData }}>
+    <AgentDataContext.Provider value={value}>
       {children}
     </AgentDataContext.Provider>
   );
