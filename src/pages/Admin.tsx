@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useAgentData, AgentData } from "@/contexts/AgentDataContext";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -37,6 +37,13 @@ const formatPhoneInput = (value: string) => {
   return `(${d.slice(0, 3)}) ${d.slice(3, 6)}-${d.slice(6, 10)}`;
 };
 
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+
 export default function Admin() {
   const { data, updateData } = useAgentData();
   const [form, setForm] = useState<AgentData>({ ...data });
@@ -45,8 +52,60 @@ export default function Admin() {
     data.stateLicenses.map(parseLicense)
   );
   const [generatingTestimonials, setGeneratingTestimonials] = useState(false);
+  const [loadingProfile, setLoadingProfile] = useState(true);
+  const [savingProfile, setSavingProfile] = useState(false);
+  const [agentId, setAgentId] = useState<string | null>(null);
+  const [agentSlug, setAgentSlug] = useState<string | null>(null);
+  const [agencySlug, setAgencySlug] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadAgent = async () => {
+      setLoadingProfile(true);
+      const { data: existingAgent, error } = await supabase
+        .from("agents")
+        .select("*")
+        .order("updated_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) {
+        console.error(error);
+        toast.error("Unable to load saved profile data.");
+        setLoadingProfile(false);
+        return;
+      }
+
+      if (existingAgent) {
+        const loadedForm: AgentData = {
+          name: existingAgent.name,
+          firstName: existingAgent.first_name,
+          lastName: existingAgent.last_name,
+          phone: existingAgent.phone,
+          email: existingAgent.email,
+          agency: existingAgent.agency,
+          npn: existingAgent.npn,
+          bio: existingAgent.bio,
+          shortBio: existingAgent.short_bio,
+          headshotUrl: existingAgent.headshot_url,
+          calendarUrl: existingAgent.calendar_url,
+          stateLicenses: existingAgent.state_licenses as string[],
+          testimonials: existingAgent.testimonials as { quote: string; name: string }[],
+        };
+        setAgentId(existingAgent.id);
+        setAgentSlug(existingAgent.slug);
+        setAgencySlug(existingAgent.agency_slug);
+        setForm(loadedForm);
+        setLicenses(loadedForm.stateLicenses.map(parseLicense));
+        updateData(loadedForm);
+      }
+
+      setLoadingProfile(false);
+    };
+
+    void loadAgent();
+  }, [updateData]);
 
   const set = (field: keyof AgentData, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -78,16 +137,58 @@ export default function Admin() {
     reader.readAsDataURL(file);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     const updatedForm = {
       ...form,
       stateLicenses: licenses
         .filter((l) => l.state && l.number)
         .map(formatLicense),
     };
-    updateData(updatedForm);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+
+    setSavingProfile(true);
+    try {
+      const { data: persistedAgent, error } = await supabase
+        .from("agents")
+        .upsert(
+          {
+            id: agentId ?? undefined,
+            slug: agentSlug ?? slugify(updatedForm.name),
+            agency_slug: agencySlug ?? slugify(updatedForm.agency),
+            name: updatedForm.name,
+            first_name: updatedForm.firstName,
+            last_name: updatedForm.lastName,
+            phone: updatedForm.phone,
+            email: updatedForm.email,
+            agency: updatedForm.agency,
+            npn: updatedForm.npn,
+            bio: updatedForm.bio,
+            short_bio: updatedForm.shortBio,
+            headshot_url: updatedForm.headshotUrl,
+            calendar_url: updatedForm.calendarUrl,
+            state_licenses: updatedForm.stateLicenses,
+            testimonials: updatedForm.testimonials,
+          },
+          { onConflict: "slug" }
+        )
+        .select("id, slug, agency_slug")
+        .single();
+
+      if (error) throw error;
+
+      updateData(updatedForm);
+      setAgentId(persistedAgent.id);
+      setAgentSlug(persistedAgent.slug);
+      setAgencySlug(persistedAgent.agency_slug);
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+      toast.success("Profile saved and persisted.");
+    } catch (err) {
+      console.error(err);
+      updateData(updatedForm);
+      toast.error("Cloud save failed. Changes were saved locally in this browser.");
+    } finally {
+      setSavingProfile(false);
+    }
   };
 
   // Licenses
@@ -147,166 +248,173 @@ export default function Admin() {
             Back to Site
           </button>
           <h1 className="text-lg font-bold text-foreground">Agent Dashboard</h1>
-          <Button onClick={handleSave} variant="hero" size="default">
-            {saved ? <Check size={16} /> : <Save size={16} />}
-            {saved ? "Saved!" : "Save Changes"}
+          <Button onClick={handleSave} variant="hero" size="default" disabled={loadingProfile || savingProfile}>
+            {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
+            {savingProfile ? "Saving..." : saved ? "Saved!" : "Save Changes"}
           </Button>
         </div>
       </div>
 
-      <div className="container max-w-2xl py-10 space-y-10">
-        {/* Personal Info */}
-        <Section title="Personal Information">
-          <div className="grid grid-cols-2 gap-4">
-            <Field label="First Name">
-              <Input value={form.firstName} onChange={(e) => setNameField("firstName", e.target.value)} />
-            </Field>
-            <Field label="Last Name">
-              <Input value={form.lastName} onChange={(e) => setNameField("lastName", e.target.value)} />
-            </Field>
-          </div>
-          <Field label="Display Name">
-            <Input value={form.name} disabled className="bg-muted text-muted-foreground" />
-          </Field>
-          <Field label="Phone Number">
-            <Input
-              value={form.phone}
-              onChange={(e) => handlePhoneChange(e.target.value)}
-              placeholder="(555) 814-2937"
-            />
-          </Field>
-          <Field label="Email">
-            <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
-          </Field>
-          <Field label="Agency Name">
-            <Input value={form.agency} onChange={(e) => set("agency", e.target.value)} placeholder="e.g. Rivera Insurance Group" />
-          </Field>
-          <Field label="Calendar Booking URL">
-            <Input value={form.calendarUrl} onChange={(e) => set("calendarUrl", e.target.value)} placeholder="https://calendly.com/..." />
-          </Field>
-          <Field label="Headshot Photo">
-            <div className="flex items-center gap-4">
-              {form.headshotUrl && (
-                <img
-                  src={form.headshotUrl}
-                  alt="Headshot preview"
-                  className="h-16 w-16 rounded-full object-cover ring-2 ring-border"
-                />
-              )}
-              <div className="flex-1">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleHeadshotUpload}
-                  className="hidden"
-                />
-                <Button
-                  variant="outline"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="w-full"
-                >
-                  <Upload size={16} />
-                  {form.headshotUrl ? "Change Photo" : "Upload Photo"}
-                </Button>
-              </div>
+      {loadingProfile ? (
+        <div className="container flex max-w-2xl items-center justify-center py-16 text-muted-foreground">
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Loading saved profile...
+        </div>
+      ) : (
+        <div className="container max-w-2xl py-10 space-y-10">
+          {/* Personal Info */}
+          <Section title="Personal Information">
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="First Name">
+                <Input value={form.firstName} onChange={(e) => setNameField("firstName", e.target.value)} />
+              </Field>
+              <Field label="Last Name">
+                <Input value={form.lastName} onChange={(e) => setNameField("lastName", e.target.value)} />
+              </Field>
             </div>
-          </Field>
-        </Section>
-
-        {/* Bio */}
-        <Section title="Bio & About">
-          <Field label="Short Bio (under profile photo)">
-            <Textarea value={form.shortBio} onChange={(e) => set("shortBio", e.target.value)} rows={3} />
-          </Field>
-          <Field label="About Me">
-            <Textarea value={form.bio} onChange={(e) => set("bio", e.target.value)} rows={6} />
-          </Field>
-        </Section>
-
-        {/* Credentials */}
-        <Section title="Licenses & Credentials">
-          <Field label="National Producer Number (NPN)">
-            <Input value={form.npn} onChange={(e) => set("npn", e.target.value)} />
-          </Field>
-          <div className="space-y-3">
-            <Label className="text-sm text-muted-foreground">State Licenses</Label>
-            {licenses.map((lic, i) => (
-              <div key={i} className="flex items-center gap-2">
-                <select
-                  value={lic.state}
-                  onChange={(e) => updateLicense(i, "state", e.target.value)}
-                  className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <option value="">State</option>
-                  {[...(lic.state ? [lic.state] : []), ...availableStates].sort().map((s) => (
-                    <option key={s} value={s}>{s}</option>
-                  ))}
-                </select>
-                <Input
-                  value={lic.number}
-                  onChange={(e) => updateLicense(i, "number", e.target.value)}
-                  placeholder="License #"
-                  className="flex-1"
-                />
-                <button
-                  onClick={() => removeLicense(i)}
-                  className="text-muted-foreground hover:text-destructive transition-colors p-2"
-                >
-                  <Trash2 size={16} />
-                </button>
+            <Field label="Display Name">
+              <Input value={form.name} disabled className="bg-muted text-muted-foreground" />
+            </Field>
+            <Field label="Phone Number">
+              <Input
+                value={form.phone}
+                onChange={(e) => handlePhoneChange(e.target.value)}
+                placeholder="(555) 814-2937"
+              />
+            </Field>
+            <Field label="Email">
+              <Input type="email" value={form.email} onChange={(e) => set("email", e.target.value)} />
+            </Field>
+            <Field label="Agency Name">
+              <Input value={form.agency} onChange={(e) => set("agency", e.target.value)} placeholder="e.g. Rivera Insurance Group" />
+            </Field>
+            <Field label="Calendar Booking URL">
+              <Input value={form.calendarUrl} onChange={(e) => set("calendarUrl", e.target.value)} placeholder="https://calendly.com/..." />
+            </Field>
+            <Field label="Headshot Photo">
+              <div className="flex items-center gap-4">
+                {form.headshotUrl && (
+                  <img
+                    src={form.headshotUrl}
+                    alt="Headshot preview"
+                    className="h-16 w-16 rounded-full object-cover ring-2 ring-border"
+                  />
+                )}
+                <div className="flex-1">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleHeadshotUpload}
+                    className="hidden"
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-full"
+                  >
+                    <Upload size={16} />
+                    {form.headshotUrl ? "Change Photo" : "Upload Photo"}
+                  </Button>
+                </div>
               </div>
-            ))}
-            <Button variant="outline" onClick={addLicense} className="w-full">
-              <Plus size={16} />
-              Add State License
-            </Button>
-          </div>
-        </Section>
+            </Field>
+          </Section>
 
-        {/* Testimonials */}
-        <Section title="Client Testimonials">
-          <div className="space-y-6">
-            <Button
-              variant="outline"
-              onClick={generateTestimonials}
-              disabled={generatingTestimonials}
-              className="w-full border-accent text-accent hover:bg-accent/10"
-            >
-              {generatingTestimonials ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-              {generatingTestimonials ? "Generating..." : "AI Auto-Generate Testimonials"}
-            </Button>
-            {form.testimonials.map((t, i) => (
-              <div key={i} className="rounded-xl bg-card p-5 ring-1 ring-border/60 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-semibold text-foreground">Testimonial {i + 1}</span>
+          {/* Bio */}
+          <Section title="Bio & About">
+            <Field label="Short Bio (under profile photo)">
+              <Textarea value={form.shortBio} onChange={(e) => set("shortBio", e.target.value)} rows={3} />
+            </Field>
+            <Field label="About Me">
+              <Textarea value={form.bio} onChange={(e) => set("bio", e.target.value)} rows={6} />
+            </Field>
+          </Section>
+
+          {/* Credentials */}
+          <Section title="Licenses & Credentials">
+            <Field label="National Producer Number (NPN)">
+              <Input value={form.npn} onChange={(e) => set("npn", e.target.value)} />
+            </Field>
+            <div className="space-y-3">
+              <Label className="text-sm text-muted-foreground">State Licenses</Label>
+              {licenses.map((lic, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  <select
+                    value={lic.state}
+                    onChange={(e) => updateLicense(i, "state", e.target.value)}
+                    className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <option value="">State</option>
+                    {[...(lic.state ? [lic.state] : []), ...availableStates].sort().map((s) => (
+                      <option key={s} value={s}>{s}</option>
+                    ))}
+                  </select>
+                  <Input
+                    value={lic.number}
+                    onChange={(e) => updateLicense(i, "number", e.target.value)}
+                    placeholder="License #"
+                    className="flex-1"
+                  />
                   <button
-                    onClick={() => removeTestimonial(i)}
-                    className="text-muted-foreground hover:text-destructive transition-colors"
+                    onClick={() => removeLicense(i)}
+                    className="text-muted-foreground hover:text-destructive transition-colors p-2"
                   >
                     <Trash2 size={16} />
                   </button>
                 </div>
-                <Field label="Client Name">
-                  <Input value={t.name} onChange={(e) => updateTestimonial(i, "name", e.target.value)} placeholder="Sarah M." />
-                </Field>
-                <Field label="Quote">
-                  <Textarea value={t.quote} onChange={(e) => updateTestimonial(i, "quote", e.target.value)} rows={3} />
-                </Field>
-              </div>
-            ))}
-            <Button variant="outline" onClick={addTestimonial} className="w-full">
-              <Plus size={16} />
-              Add Testimonial
-            </Button>
-          </div>
-        </Section>
+              ))}
+              <Button variant="outline" onClick={addLicense} className="w-full">
+                <Plus size={16} />
+                Add State License
+              </Button>
+            </div>
+          </Section>
 
-        <Button onClick={handleSave} variant="hero" size="lg" className="w-full">
-          {saved ? <Check size={16} /> : <Save size={16} />}
-          {saved ? "Saved!" : "Save All Changes"}
-        </Button>
-      </div>
+          {/* Testimonials */}
+          <Section title="Client Testimonials">
+            <div className="space-y-6">
+              <Button
+                variant="outline"
+                onClick={generateTestimonials}
+                disabled={generatingTestimonials}
+                className="w-full border-accent text-accent hover:bg-accent/10"
+              >
+                {generatingTestimonials ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
+                {generatingTestimonials ? "Generating..." : "AI Auto-Generate Testimonials"}
+              </Button>
+              {form.testimonials.map((t, i) => (
+                <div key={i} className="rounded-xl bg-card p-5 ring-1 ring-border/60 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-semibold text-foreground">Testimonial {i + 1}</span>
+                    <button
+                      onClick={() => removeTestimonial(i)}
+                      className="text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                  <Field label="Client Name">
+                    <Input value={t.name} onChange={(e) => updateTestimonial(i, "name", e.target.value)} placeholder="Sarah M." />
+                  </Field>
+                  <Field label="Quote">
+                    <Textarea value={t.quote} onChange={(e) => updateTestimonial(i, "quote", e.target.value)} rows={3} />
+                  </Field>
+                </div>
+              ))}
+              <Button variant="outline" onClick={addTestimonial} className="w-full">
+                <Plus size={16} />
+                Add Testimonial
+              </Button>
+            </div>
+          </Section>
+
+          <Button onClick={handleSave} variant="hero" size="lg" className="w-full" disabled={savingProfile}>
+            {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
+            {savingProfile ? "Saving..." : saved ? "Saved!" : "Save All Changes"}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
