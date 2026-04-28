@@ -10,13 +10,6 @@ export default function LegalSection() {
           </p>
         </div>
 
-        {/* Terms and Conditions */}
-        <div id="terms">
-          <h2 className="text-2xl font-bold text-foreground mb-4">Terms and Conditions</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Last Updated: March 27, 2026. By accessing this website or submitting your information, you agree to these Terms and Conditions. Christopher W Garness / CG Financial provides independent life insurance consulting services. We help individuals find and apply for life insurance products offered by licensed insurance carriers. We do not guarantee approval for any insurance product. By providing your phone number and consenting to SMS communications, you agree to receive text messages including appointment reminders, insurance updates, and follow-up messages. You may opt out at any time by replying STOP. Reply HELP for assistance. Message and data rates may apply. Message frequency may vary. Consent is not a condition of purchase. Mobile opt-in data will not be shared with third parties for marketing purposes. The information on this website is for general informational purposes only and does not constitute legal, financial, or insurance advice. CG Financial and Christopher W Garness shall not be liable for any damages arising from use of this website. We reserve the right to update these Terms at any time. Contact: Christopher W Garness / CG Financial | 6768 Regal Park Dr, Fontana, CA 92336 | chris@fflagent.com
-          </p>
-        </div>
       </div>
     </section>
   );
