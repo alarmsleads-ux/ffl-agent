@@ -27,7 +27,7 @@ const SmsOptIn: React.FC = () => {
             Privacy Policy
           </Link>
           <span>·</span>
-          <Link to="/terms" className="hover:text-accent transition-colors underline-offset-4 hover:underline">
+          <Link to="/terms-and-conditions" className="hover:text-accent transition-colors underline-offset-4 hover:underline">
             Terms and Conditions
           </Link>
         </div>
