@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound.tsx";
 import SmsOptIn from "./pages/SmsOptIn.tsx";
 import BookCall from "./pages/BookCall.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+import TermsAndConditions from "./pages/TermsAndConditions.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
