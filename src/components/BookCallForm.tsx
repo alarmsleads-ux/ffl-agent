@@ -42,12 +42,12 @@ const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) =>
 
   const legalLinks = useMemo(() => {
     if (!agencySlug || !agentSlug) {
-      return { privacy: "/privacy-policy", terms: "/terms" };
+      return { privacy: "/privacy-policy", terms: "/terms-and-conditions" };
     }
 
     return {
       privacy: `/${agencySlug}/${agentSlug}/privacy-policy`,
-      terms: `/${agencySlug}/${agentSlug}#terms`,
+      terms: `/${agencySlug}/${agentSlug}/terms-and-conditions`,
     };
   }, [agencySlug, agentSlug]);
 
