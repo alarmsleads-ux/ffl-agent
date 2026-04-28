@@ -12,6 +12,7 @@ import NotFound from "./pages/NotFound.tsx";
 import SmsOptIn from "./pages/SmsOptIn.tsx";
 import BookCall from "./pages/BookCall.tsx";
 import PrivacyPolicy from "./pages/PrivacyPolicy.tsx";
+import TermsAndConditions from "./pages/TermsAndConditions.tsx";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -29,8 +30,11 @@ const App = () => (
             <Route path="/:agencySlug/:agentSlug/book" element={<BookCall />} />
             <Route path="/:agencySlug/:agentSlug/bookcall" element={<BookCall />} />
             <Route path="/:agencySlug/:agentSlug/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/:agencySlug/:agentSlug/terms-and-conditions" element={<TermsAndConditions />} />
             <Route path="/sms-opt-in" element={<SmsOptIn />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+            <Route path="/terms" element={<TermsAndConditions />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
