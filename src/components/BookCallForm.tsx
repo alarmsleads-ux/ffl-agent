@@ -24,9 +24,7 @@ const formSchema = z.object({
   lastName: z.string().trim().min(1, "Last name is required").max(100),
   phone: z.string().trim().min(1, "Phone number is required").regex(phoneRegex, "Enter a valid US phone number"),
   email: z.string().trim().min(1, "Email is required").email("Enter a valid email address").max(255),
-  contactConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must agree to be contacted to proceed" }),
-  }),
+  contactConsent: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
