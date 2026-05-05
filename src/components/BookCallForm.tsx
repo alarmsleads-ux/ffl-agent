@@ -56,7 +56,7 @@ const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) =>
       lastName: "",
       phone: "",
       email: "",
-      contactConsent: undefined as unknown as true,
+      contactConsent: false,
     },
   });
 
