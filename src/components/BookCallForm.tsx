@@ -24,9 +24,7 @@ const formSchema = z.object({
   lastName: z.string().trim().min(1, "Last name is required").max(100),
   phone: z.string().trim().min(1, "Phone number is required").regex(phoneRegex, "Enter a valid US phone number"),
   email: z.string().trim().min(1, "Email is required").email("Enter a valid email address").max(255),
-  contactConsent: z.literal(true, {
-    errorMap: () => ({ message: "You must agree to be contacted to proceed" }),
-  }),
+  contactConsent: z.boolean().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -58,7 +56,7 @@ const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) =>
       lastName: "",
       phone: "",
       email: "",
-      contactConsent: undefined as unknown as true,
+      contactConsent: false,
     },
   });
 
@@ -148,13 +146,13 @@ const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) =>
                 <FormControl>
                   <Checkbox
                     checked={field.value === true}
-                    onCheckedChange={(checked) => field.onChange(checked === true ? true : undefined)}
+                    onCheckedChange={(checked) => field.onChange(checked === true)}
                   />
                 </FormControl>
                 <div className="space-y-1">
                   <Label
                     className="text-sm font-normal leading-snug cursor-pointer"
-                    onClick={() => field.onChange(field.value === true ? undefined : true)}
+                    onClick={() => field.onChange(!field.value)}
                   >
                     I expressly consent to receive calls and SMS/text messages from{" "}
                     <strong>{agentName}</strong> and <strong>{agencyName}</strong>
