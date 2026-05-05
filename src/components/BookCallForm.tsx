@@ -146,13 +146,13 @@ const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) =>
                 <FormControl>
                   <Checkbox
                     checked={field.value === true}
-                    onCheckedChange={(checked) => field.onChange(checked === true ? true : undefined)}
+                    onCheckedChange={(checked) => field.onChange(checked === true)}
                   />
                 </FormControl>
                 <div className="space-y-1">
                   <Label
                     className="text-sm font-normal leading-snug cursor-pointer"
-                    onClick={() => field.onChange(field.value === true ? undefined : true)}
+                    onClick={() => field.onChange(!field.value)}
                   >
                     I expressly consent to receive calls and SMS/text messages from{" "}
                     <strong>{agentName}</strong> and <strong>{agencyName}</strong>
