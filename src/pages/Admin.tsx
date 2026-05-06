@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useAgentData, AgentData } from "@/contexts/AgentDataContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Save, Plus, Trash2, ArrowLeft, Check, Upload, Sparkles, Loader2 } from "lucide-react";
+import { Save, Plus, Trash2, ArrowLeft, Check, Upload, Sparkles, Loader2, LogOut, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
