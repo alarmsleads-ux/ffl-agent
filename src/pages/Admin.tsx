@@ -49,6 +49,7 @@ const ADMIN_AGENT_ID_KEY = "admin-agent-id";
 
 export default function Admin() {
   const { data, updateData } = useAgentData();
+  const { user, loading: authLoading } = useAuth();
   const [form, setForm] = useState<AgentData>({ ...data });
   const [saved, setSaved] = useState(false);
   const [licenses, setLicenses] = useState<StateLicense[]>(
@@ -58,8 +59,62 @@ export default function Admin() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [agentId, setAgentId] = useState<string | null>(null);
+  const [agentSlug, setAgentSlug] = useState<string | null>(null);
+  const [agencySlug, setAgencySlug] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      navigate("/agent-admin/login");
+      return;
+    }
+
+    const loadAgent = async () => {
+      setLoadingProfile(true);
+      const { data: existingAgent, error } = await supabase
+        .from("agents")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error(error);
+        toast.error("Unable to load your profile.");
+        setLoadingProfile(false);
+        return;
+      }
+
+      if (existingAgent) {
+        const loadedForm: AgentData = {
+          name: existingAgent.name,
+          firstName: existingAgent.first_name,
+          lastName: existingAgent.last_name,
+          phone: existingAgent.phone,
+          email: existingAgent.email,
+          agency: existingAgent.agency,
+          npn: existingAgent.npn,
+          bio: existingAgent.bio,
+          shortBio: existingAgent.short_bio,
+          headshotUrl: existingAgent.headshot_url,
+          calendarUrl: existingAgent.calendar_url,
+          stateLicenses: existingAgent.state_licenses as string[],
+          testimonials: existingAgent.testimonials as { quote: string; name: string }[],
+        };
+        setAgentId(existingAgent.id);
+        setAgentSlug(existingAgent.slug);
+        setAgencySlug(existingAgent.agency_slug);
+        setForm(loadedForm);
+        setLicenses(loadedForm.stateLicenses.map(parseLicense));
+        updateData(loadedForm);
+      }
+
+      setLoadingProfile(false);
+    };
+
+    void loadAgent();
+  }, [user, authLoading, navigate, updateData]);
 
   useEffect(() => {
     const loadAgent = async () => {
