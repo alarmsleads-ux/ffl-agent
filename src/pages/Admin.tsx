@@ -116,62 +116,6 @@ export default function Admin() {
     void loadAgent();
   }, [user, authLoading, navigate, updateData]);
 
-  useEffect(() => {
-    const loadAgent = async () => {
-      setLoadingProfile(true);
-
-      const rememberedAgentId = localStorage.getItem(ADMIN_AGENT_ID_KEY);
-
-      const byIdQuery = rememberedAgentId
-        ? supabase.from("agents").select("*").eq("id", rememberedAgentId).maybeSingle()
-        : Promise.resolve({ data: null, error: null });
-
-      const latestQuery = supabase
-        .from("agents")
-        .select("*")
-        .order("updated_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-
-      const [byIdResult, latestResult] = await Promise.all([byIdQuery, latestQuery]);
-      const existingAgent = byIdResult.data ?? latestResult.data;
-      const error = byIdResult.error ?? latestResult.error;
-
-      if (error) {
-        console.error(error);
-        toast.error("Unable to load saved profile data.");
-        setLoadingProfile(false);
-        return;
-      }
-
-      if (existingAgent) {
-        const loadedForm: AgentData = {
-          name: existingAgent.name,
-          firstName: existingAgent.first_name,
-          lastName: existingAgent.last_name,
-          phone: existingAgent.phone,
-          email: existingAgent.email,
-          agency: existingAgent.agency,
-          npn: existingAgent.npn,
-          bio: existingAgent.bio,
-          shortBio: existingAgent.short_bio,
-          headshotUrl: existingAgent.headshot_url,
-          calendarUrl: existingAgent.calendar_url,
-          stateLicenses: existingAgent.state_licenses as string[],
-          testimonials: existingAgent.testimonials as { quote: string; name: string }[],
-        };
-        localStorage.setItem(ADMIN_AGENT_ID_KEY, existingAgent.id);
-        setAgentId(existingAgent.id);
-        setForm(loadedForm);
-        setLicenses(loadedForm.stateLicenses.map(parseLicense));
-        updateData(loadedForm);
-      }
-
-      setLoadingProfile(false);
-    };
-
-    void loadAgent();
-  }, [updateData]);
 
   const set = (field: keyof AgentData, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
