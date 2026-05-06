@@ -148,6 +148,10 @@ export default function Admin() {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      toast.error("You must be signed in to save.");
+      return;
+    }
     const updatedForm = {
       ...form,
       stateLicenses: licenses
@@ -170,6 +174,7 @@ export default function Admin() {
         .upsert(
           {
             id: agentId ?? undefined,
+            user_id: user.id,
             slug: nextAgentSlug,
             agency_slug: nextAgencySlug,
             name: updatedForm.name,
@@ -186,7 +191,7 @@ export default function Admin() {
             state_licenses: updatedForm.stateLicenses,
             testimonials: updatedForm.testimonials,
           },
-          { onConflict: "id" }
+          { onConflict: "user_id" }
         )
         .select("id, slug, agency_slug")
         .single();
@@ -194,11 +199,12 @@ export default function Admin() {
       if (error) throw error;
 
       updateData(updatedForm);
-      localStorage.setItem(ADMIN_AGENT_ID_KEY, persistedAgent.id);
       setAgentId(persistedAgent.id);
+      setAgentSlug(persistedAgent.slug);
+      setAgencySlug(persistedAgent.agency_slug);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-      toast.success("Profile saved and persisted.");
+      toast.success("Profile saved.");
     } catch (err) {
       console.error(err);
       toast.error("Failed to save profile. Please check your admin session.");
