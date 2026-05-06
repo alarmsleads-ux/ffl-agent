@@ -45,7 +45,7 @@ const slugify = (value: string) =>
     .trim()
     .replace(/\s+/g, "-");
 
-const ADMIN_AGENT_ID_KEY = "admin-agent-id";
+
 
 export default function Admin() {
   const { data, updateData } = useAgentData();
@@ -270,10 +270,33 @@ export default function Admin() {
             Back to Site
           </button>
           <h1 className="text-lg font-bold text-foreground">Agent Dashboard</h1>
-          <Button onClick={handleSave} variant="hero" size="default" disabled={loadingProfile || savingProfile}>
-            {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
-            {savingProfile ? "Saving..." : saved ? "Saved!" : "Save Changes"}
-          </Button>
+          <div className="flex items-center gap-2">
+            {agencySlug && agentSlug && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(`/${agencySlug}/${agentSlug}`, "_blank")}
+              >
+                <ExternalLink size={14} />
+                View
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate("/agent-admin/login");
+              }}
+            >
+              <LogOut size={14} />
+              Sign out
+            </Button>
+            <Button onClick={handleSave} variant="hero" size="default" disabled={loadingProfile || savingProfile}>
+              {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
+              {savingProfile ? "Saving..." : saved ? "Saved!" : "Save"}
+            </Button>
+          </div>
         </div>
       </div>
 
