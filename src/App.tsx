@@ -8,6 +8,8 @@ import Landing from "./pages/Landing.tsx";
 import Index from "./pages/Index.tsx";
 import Search from "./pages/Search.tsx";
 import Admin from "./pages/Admin.tsx";
+import AgentSignup from "./pages/AgentSignup.tsx";
+import AgentLogin from "./pages/AgentLogin.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import SmsOptIn from "./pages/SmsOptIn.tsx";
 import BookCall from "./pages/BookCall.tsx";
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/" element={<Landing />} />
             <Route path="/search" element={<Search />} />
             <Route path="/agent-admin" element={<Admin />} />
+            <Route path="/agent-admin/signup" element={<AgentSignup />} />
+            <Route path="/agent-admin/login" element={<AgentLogin />} />
             <Route path="/:agencySlug/:agentSlug" element={<Index />} />
             <Route path="/:agencySlug/:agentSlug/book" element={<BookCall />} />
             <Route path="/:agencySlug/:agentSlug/bookcall" element={<BookCall />} />
