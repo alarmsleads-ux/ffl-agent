@@ -1,11 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { useAgentData, AgentData } from "@/contexts/AgentDataContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Save, Plus, Trash2, ArrowLeft, Check, Upload, Sparkles, Loader2 } from "lucide-react";
+import { Save, Plus, Trash2, ArrowLeft, Check, Upload, Sparkles, Loader2, LogOut, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
@@ -44,10 +45,11 @@ const slugify = (value: string) =>
     .trim()
     .replace(/\s+/g, "-");
 
-const ADMIN_AGENT_ID_KEY = "admin-agent-id";
+
 
 export default function Admin() {
   const { data, updateData } = useAgentData();
+  const { user, loading: authLoading } = useAuth();
   const [form, setForm] = useState<AgentData>({ ...data });
   const [saved, setSaved] = useState(false);
   const [licenses, setLicenses] = useState<StateLicense[]>(
@@ -57,33 +59,29 @@ export default function Admin() {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const [savingProfile, setSavingProfile] = useState(false);
   const [agentId, setAgentId] = useState<string | null>(null);
+  const [agentSlug, setAgentSlug] = useState<string | null>(null);
+  const [agencySlug, setAgencySlug] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (authLoading) return;
+    if (!user) {
+      navigate("/agent-admin/login");
+      return;
+    }
+
     const loadAgent = async () => {
       setLoadingProfile(true);
-
-      const rememberedAgentId = localStorage.getItem(ADMIN_AGENT_ID_KEY);
-
-      const byIdQuery = rememberedAgentId
-        ? supabase.from("agents").select("*").eq("id", rememberedAgentId).maybeSingle()
-        : Promise.resolve({ data: null, error: null });
-
-      const latestQuery = supabase
+      const { data: existingAgent, error } = await supabase
         .from("agents")
         .select("*")
-        .order("updated_at", { ascending: false })
-        .limit(1)
+        .eq("user_id", user.id)
         .maybeSingle();
-
-      const [byIdResult, latestResult] = await Promise.all([byIdQuery, latestQuery]);
-      const existingAgent = byIdResult.data ?? latestResult.data;
-      const error = byIdResult.error ?? latestResult.error;
 
       if (error) {
         console.error(error);
-        toast.error("Unable to load saved profile data.");
+        toast.error("Unable to load your profile.");
         setLoadingProfile(false);
         return;
       }
@@ -104,8 +102,9 @@ export default function Admin() {
           stateLicenses: existingAgent.state_licenses as string[],
           testimonials: existingAgent.testimonials as { quote: string; name: string }[],
         };
-        localStorage.setItem(ADMIN_AGENT_ID_KEY, existingAgent.id);
         setAgentId(existingAgent.id);
+        setAgentSlug(existingAgent.slug);
+        setAgencySlug(existingAgent.agency_slug);
         setForm(loadedForm);
         setLicenses(loadedForm.stateLicenses.map(parseLicense));
         updateData(loadedForm);
@@ -115,7 +114,8 @@ export default function Admin() {
     };
 
     void loadAgent();
-  }, [updateData]);
+  }, [user, authLoading, navigate, updateData]);
+
 
   const set = (field: keyof AgentData, value: string) =>
     setForm((prev) => ({ ...prev, [field]: value }));
@@ -148,6 +148,10 @@ export default function Admin() {
   };
 
   const handleSave = async () => {
+    if (!user) {
+      toast.error("You must be signed in to save.");
+      return;
+    }
     const updatedForm = {
       ...form,
       stateLicenses: licenses
@@ -170,6 +174,7 @@ export default function Admin() {
         .upsert(
           {
             id: agentId ?? undefined,
+            user_id: user.id,
             slug: nextAgentSlug,
             agency_slug: nextAgencySlug,
             name: updatedForm.name,
@@ -186,7 +191,7 @@ export default function Admin() {
             state_licenses: updatedForm.stateLicenses,
             testimonials: updatedForm.testimonials,
           },
-          { onConflict: "id" }
+          { onConflict: "user_id" }
         )
         .select("id, slug, agency_slug")
         .single();
@@ -194,11 +199,12 @@ export default function Admin() {
       if (error) throw error;
 
       updateData(updatedForm);
-      localStorage.setItem(ADMIN_AGENT_ID_KEY, persistedAgent.id);
       setAgentId(persistedAgent.id);
+      setAgentSlug(persistedAgent.slug);
+      setAgencySlug(persistedAgent.agency_slug);
       setSaved(true);
       setTimeout(() => setSaved(false), 2000);
-      toast.success("Profile saved and persisted.");
+      toast.success("Profile saved.");
     } catch (err) {
       console.error(err);
       toast.error("Failed to save profile. Please check your admin session.");
@@ -264,10 +270,33 @@ export default function Admin() {
             Back to Site
           </button>
           <h1 className="text-lg font-bold text-foreground">Agent Dashboard</h1>
-          <Button onClick={handleSave} variant="hero" size="default" disabled={loadingProfile || savingProfile}>
-            {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
-            {savingProfile ? "Saving..." : saved ? "Saved!" : "Save Changes"}
-          </Button>
+          <div className="flex items-center gap-2">
+            {agencySlug && agentSlug && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => window.open(`/${agencySlug}/${agentSlug}`, "_blank")}
+              >
+                <ExternalLink size={14} />
+                View
+              </Button>
+            )}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate("/agent-admin/login");
+              }}
+            >
+              <LogOut size={14} />
+              Sign out
+            </Button>
+            <Button onClick={handleSave} variant="hero" size="default" disabled={loadingProfile || savingProfile}>
+              {savingProfile ? <Loader2 size={16} className="animate-spin" /> : saved ? <Check size={16} /> : <Save size={16} />}
+              {savingProfile ? "Saving..." : saved ? "Saved!" : "Save"}
+            </Button>
+          </div>
         </div>
       </div>
 
