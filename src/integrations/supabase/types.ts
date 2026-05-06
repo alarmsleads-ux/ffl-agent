@@ -34,6 +34,7 @@ export type Database = {
           state_licenses: Json
           testimonials: Json
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           agency?: string
@@ -54,6 +55,7 @@ export type Database = {
           state_licenses?: Json
           testimonials?: Json
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           agency?: string
@@ -74,6 +76,7 @@ export type Database = {
           state_licenses?: Json
           testimonials?: Json
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

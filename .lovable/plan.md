@@ -1,42 +1,84 @@
-## Move Terms and Conditions to a Dedicated Page
+## Goal
 
-Mirror the existing Privacy Policy pattern so Terms gets its own URL, and remove the Terms section from the in-page LegalSection.
+Add hidden authentication so each agent has their own account. The Admin page loads/saves only the logged-in agent's profile. No public-facing sign-in/sign-up links — accounts are created by visiting hidden URLs.
 
-### New page
+## Auth approach
 
-Create `src/pages/TermsAndConditions.tsx`, structured the same way as `src/pages/PrivacyPolicy.tsx` (header, sections, contact block). Content is the existing Terms copy from `src/components/LegalSection.tsx`, expanded into clear sections:
+- Use Lovable Cloud email/password auth (no email confirmation, so signup → instant login).
+- No public links to auth pages. Hidden routes only:
+  - `/agent-admin/signup` — sign-up form (email + password + first name + last name + agency)
+  - `/agent-admin/login` — login form
+- `/agent-admin` becomes protected. If not logged in → redirect to `/agent-admin/login`.
+- Add a small "Sign out" button in the Admin header.
 
-1. Acceptance of Terms
-2. Services Provided (independent life insurance consulting; no approval guarantee)
-3. SMS Communications (STOP/HELP, frequency, rates, consent not required for purchase, no third-party sharing of opt-in data)
-4. Phone & Email Communications
-5. No Professional Advice (informational only)
-6. Limitation of Liability
-7. Changes to Terms
-8. Contact Information (CG Financial / Christopher W Garness, address, phone, email)
+## Database changes
 
-### Routes (`src/App.tsx`)
+1. Add `user_id uuid` column to `agents` (nullable for now to preserve existing row, then enforced via app logic).
+2. Add unique constraint on `user_id` (one profile per account).
+3. Add unique constraint on `(agency_slug, slug)` so URLs stay unique.
+4. Tighten RLS on `agents`:
+   - SELECT: public (profiles are public-facing pages).
+   - INSERT: `auth.uid() = user_id`.
+   - UPDATE: `auth.uid() = user_id`.
+   - DELETE: `auth.uid() = user_id`.
+5. Drop the existing permissive "Anyone can insert/update" policies.
+6. Trigger on signup: auto-create a blank `agents` row for the new user with their first/last name and a generated unique slug, so they land in the dashboard with a starter profile.
 
-Add two routes mirroring the privacy-policy routes:
+Note: the existing single demo agent row (Christopher) has no `user_id`. The migration will leave it as-is (publicly viewable, not editable by anyone since no policy matches). New signups create new rows.
 
-- `/terms-and-conditions` → `<TermsAndConditions />`
-- `/:agencySlug/:agentSlug/terms-and-conditions` → `<TermsAndConditions />`
+## Code changes
 
-### Update existing links
+### New: `src/pages/AgentSignup.tsx`
+Form: email, password, first name, last name, agency name. Calls `supabase.auth.signUp` with `emailRedirectTo: window.location.origin + '/agent-admin'` and metadata `{ first_name, last_name, agency }`. On success → navigate to `/agent-admin`.
 
-Repoint every "Terms and Conditions" link from the old in-page `#terms` anchor (or `/terms`) to the new page:
+### New: `src/pages/AgentLogin.tsx`
+Email + password. On success → `/agent-admin`. Small link to `/agent-admin/signup`.
 
-- `src/components/BookCallForm.tsx` — change `legalLinks.terms` to `/terms-and-conditions` (default) and `/${agencySlug}/${agentSlug}/terms-and-conditions` (agent-scoped).
-- `src/pages/SmsOptIn.tsx` — change `/terms` link to `/terms-and-conditions`.
+### New: `src/hooks/useAuth.ts`
+Subscribes to `onAuthStateChange`, exposes `{ user, session, loading }`.
 
-### Remove Terms from LegalSection
+### Modified: `src/pages/Admin.tsx`
+- Replace "load latest agent" logic with: load the agent row where `user_id = auth.uid()`.
+- Remove `ADMIN_AGENT_ID_KEY` localStorage hack.
+- Save sets `user_id: session.user.id` and upserts on `user_id`.
+- If not authenticated → redirect to `/agent-admin/login`.
+- Add "Sign out" button in header (signs out + navigates to login).
+- "View my profile" link that opens `/:agency_slug/:slug` in a new tab.
 
-In `src/components/LegalSection.tsx`, delete the `#terms` block so the in-page section only renders Privacy Policy (matching how Privacy was already moved out — we'll leave Privacy in place since the dedicated page already exists and the section currently still shows it; no change there unless you'd also like that block removed).
+### Modified: `src/App.tsx`
+Add routes:
+- `/agent-admin/signup` → `AgentSignup`
+- `/agent-admin/login` → `AgentLogin`
 
-Optionally, also remove the inline Privacy block from `LegalSection.tsx` since `/privacy-policy` exists — let me know if you want that too. Default plan keeps Privacy block as-is and only removes the Terms block.
+### Migration SQL (summary)
 
-### Result
+```sql
+alter table public.agents add column user_id uuid;
+create unique index agents_user_id_key on public.agents(user_id) where user_id is not null;
+create unique index agents_agency_slug_slug_key on public.agents(agency_slug, slug);
 
-- Terms lives at `/terms-and-conditions` and `/:agency/:agent/terms-and-conditions`.
-- BookCall form, SMS opt-in, and any Terms link route to the new page.
-- The agent page no longer scrolls to a `#terms` anchor.
+drop policy "Anyone can insert agents" on public.agents;
+drop policy "Anyone can update agents" on public.agents;
+
+create policy "Users insert own agent" on public.agents
+  for insert to authenticated with check (auth.uid() = user_id);
+create policy "Users update own agent" on public.agents
+  for update to authenticated using (auth.uid() = user_id);
+create policy "Users delete own agent" on public.agents
+  for delete to authenticated using (auth.uid() = user_id);
+
+-- handle_new_user trigger creates an agents row from auth metadata
+```
+
+## Out of scope
+
+- Password reset flow (can add later if needed).
+- Google/social login (not requested).
+- Admin role / multi-agent-per-account.
+
+## Result
+
+- Visit `/agent-admin/signup` (hidden) → create account → land in dashboard with empty profile prefilled with name/agency.
+- Profile saves are scoped to the logged-in user; multiple agents coexist.
+- Public profile pages `/:agency/:agent` continue to work for anyone.
+- No sign-in UI exposed anywhere on the public site.
