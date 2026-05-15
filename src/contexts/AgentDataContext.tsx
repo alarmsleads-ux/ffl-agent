@@ -17,15 +17,15 @@ export interface AgentData {
 }
 
 const DEFAULT_DATA: AgentData = {
-  name: "Christopher W Garness",
+  name: "Christopher Garness",
   firstName: "Christopher",
   lastName: "Garness",
   phone: "(909) 555-1234",
   email: "chris@fflagent.com",
   agency: "CG Financial",
   npn: "",
-  bio: "I'm Christopher W Garness, an independent life insurance agent with CG Financial. I'm passionate about helping families and individuals find the right life insurance coverage to protect their loved ones. I believe that everyone deserves access to clear, honest guidance when it comes to financial protection — no jargon, no pressure, just straightforward advice tailored to your unique situation.",
-  shortBio: "Independent life insurance agent helping families find the right coverage. Christopher W Garness | CG Financial.",
+  bio: "I'm Christopher Garness, an independent life insurance agent with CG Financial. I'm passionate about helping families and individuals find the right life insurance coverage to protect their loved ones. I believe that everyone deserves access to clear, honest guidance when it comes to financial protection — no jargon, no pressure, just straightforward advice tailored to your unique situation.",
+  shortBio: "Independent life insurance agent helping families find the right coverage. Christopher Garness | CG Financial.",
   headshotUrl: "",
   calendarUrl: "#contact",
   stateLicenses: [
