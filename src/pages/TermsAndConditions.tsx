@@ -38,9 +38,10 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">3. SMS Communications</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            By providing your phone number and consenting to SMS communications, you agree to
-            receive recurring text messages including appointment reminders, insurance updates,
-            policy information, quote follow-ups, and promotional offers from CG Financial.
+            By providing your phone number and optionally consenting to SMS communications, you
+            agree to receive recurring text messages including appointment reminders, insurance
+            updates, policy information, quote follow-ups, and promotional offers from Christopher
+            Garness and CG Financial.
           </p>
           <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
             <li>Message frequency may vary</li>
