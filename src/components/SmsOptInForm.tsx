@@ -177,32 +177,29 @@ const SmsOptInForm: React.FC = () => {
                   className="text-sm font-normal leading-snug cursor-pointer"
                   onClick={() => field.onChange(!field.value)}
                 >
-                  I agree to receive calls, SMS/MMS, and emails from CG Financial (optional).
+                  I agree to receive calls, SMS/MMS, and emails from Christopher Garness and CG Financial (optional).
                 </Label>
               </FormItem>
             )}
           />
 
           <p className="text-xs text-muted-foreground leading-relaxed">
-            <strong>Opt In:</strong> By providing your phone number and email address, you expressly
-            consent to receive recurring automated marketing and informational text messages
-            (SMS/MMS), phone calls (including autodialed and prerecorded calls), and emails from CG
-            Financial (Christopher Garness) regarding life insurance quotes, policy updates,
-            appointment reminders, and promotional offers.
-          </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Consent is not a condition of purchase. Message and data rates may apply. Message
-            frequency varies.
-          </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            To opt out of SMS, reply STOP at any time. For help, reply HELP or contact us at
-            chris@fflagent.com or 909-775-6963.
-          </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            View our Privacy Policy here:{" "}
-            <a href="/privacy-policy" className="underline underline-offset-2 hover:text-accent">
-              /privacy-policy
-            </a>
+            <strong>Opt-In:</strong> By checking this box, I provide my express written consent to
+            receive telephone calls (including calls using an automatic telephone dialing system or
+            an artificial or prerecorded voice) and recurring SMS/MMS text messages from{" "}
+            <strong>Christopher Garness</strong> and <strong>CG Financial</strong> at the phone
+            number provided above, including for marketing purposes. Consent is not required to
+            receive a quote or book a call. Message and data rates may apply. Message frequency may
+            vary. I may revoke this consent at any time by replying STOP to any message or by
+            contacting us directly. Reply HELP for help. I have read and agree to the{" "}
+            <Link to="/privacy-policy" className="underline underline-offset-2 hover:text-accent">
+              Privacy Policy
+            </Link>{" "}
+            and{" "}
+            <Link to="/terms-and-conditions" className="underline underline-offset-2 hover:text-accent">
+              Terms and Conditions
+            </Link>
+            .
           </p>
         </div>
 
