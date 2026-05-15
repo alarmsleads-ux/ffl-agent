@@ -11,9 +11,9 @@ const TermsAndConditions: React.FC = () => {
 
         <p className="text-sm text-muted-foreground leading-relaxed">
           These Terms and Conditions ("Terms") govern your access to and use of services provided by
-          CG Financial ("we," "us," or "our"), operated by Christopher W Garness, including our
-          website, forms, phone, email, and SMS communications. By accessing our website or
-          submitting your information, you agree to these Terms.
+          Christopher Garness and CG Financial ("we," "us," or "our"), including our website, forms,
+          phone, email, and SMS communications. By accessing our website or submitting your
+          information, you agree to these Terms.
         </p>
 
         <section className="space-y-3">
@@ -28,7 +28,7 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">2. Services Provided</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            CG Financial and Christopher W Garness provide independent life insurance consulting
+            Christopher Garness and CG Financial provide independent life insurance consulting
             services. We help individuals find and apply for life insurance products offered by
             licensed insurance carriers. We do not underwrite or issue insurance policies, and we do
             not guarantee approval for any insurance product.
@@ -38,9 +38,10 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">3. SMS Communications</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            By providing your phone number and consenting to SMS communications, you agree to
-            receive recurring text messages including appointment reminders, insurance updates,
-            policy information, quote follow-ups, and promotional offers from CG Financial.
+            By providing your phone number and optionally consenting to SMS communications, you
+            agree to receive recurring text messages including appointment reminders, insurance
+            updates, policy information, quote follow-ups, and promotional offers from Christopher
+            Garness and CG Financial.
           </p>
           <ul className="list-disc pl-5 text-sm text-muted-foreground space-y-1">
             <li>Message frequency may vary</li>
@@ -80,7 +81,7 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">6. Limitation of Liability</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            CG Financial and Christopher W Garness shall not be liable for any direct, indirect,
+            Christopher Garness and CG Financial shall not be liable for any direct, indirect,
             incidental, consequential, or special damages arising from your use of this website or
             our services, to the fullest extent permitted by law.
           </p>
@@ -98,8 +99,8 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">8. Contact Information</h2>
           <div className="text-sm text-muted-foreground leading-relaxed">
+            <p>Christopher Garness</p>
             <p>CG Financial</p>
-            <p>Christopher W Garness</p>
             <p>6768 Regal Park Dr</p>
             <p>Fontana, CA 92336</p>
             <p className="mt-2">Phone: 909-775-6963</p>
