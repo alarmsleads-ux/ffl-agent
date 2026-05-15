@@ -81,7 +81,7 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">6. Limitation of Liability</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            CG Financial and Christopher W Garness shall not be liable for any direct, indirect,
+            Christopher Garness and CG Financial shall not be liable for any direct, indirect,
             incidental, consequential, or special damages arising from your use of this website or
             our services, to the fullest extent permitted by law.
           </p>
