@@ -99,8 +99,8 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">8. Contact Information</h2>
           <div className="text-sm text-muted-foreground leading-relaxed">
+            <p>Christopher Garness</p>
             <p>CG Financial</p>
-            <p>Christopher W Garness</p>
             <p>6768 Regal Park Dr</p>
             <p>Fontana, CA 92336</p>
             <p className="mt-2">Phone: 909-775-6963</p>
