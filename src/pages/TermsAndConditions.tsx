@@ -28,7 +28,7 @@ const TermsAndConditions: React.FC = () => {
         <section className="space-y-3">
           <h2 className="text-xl font-semibold text-foreground">2. Services Provided</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            CG Financial and Christopher W Garness provide independent life insurance consulting
+            Christopher Garness and CG Financial provide independent life insurance consulting
             services. We help individuals find and apply for life insurance products offered by
             licensed insurance carriers. We do not underwrite or issue insurance policies, and we do
             not guarantee approval for any insurance product.
