@@ -12,7 +12,7 @@ const SmsOptIn: React.FC = () => {
             Get Your Free Life Insurance Quote
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base">
-            Christopher W Garness | Independent Insurance Agent | CG Financial
+            Christopher Garness | CG Financial | Independent Insurance Agent
           </p>
         </div>
 
