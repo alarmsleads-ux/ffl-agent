@@ -155,7 +155,7 @@ const BookCallForm: React.FC<BookCallFormProps> = ({ agentName, agencyName }) =>
                     onClick={() => field.onChange(!field.value)}
                   >
                     I expressly consent to receive calls and SMS/text messages from{" "}
-                    <strong>{agentName}</strong> and <strong>{agencyName}</strong>
+                    <strong>{agentName}</strong> and <strong>{agencyName}</strong> (optional)
                   </Label>
                   <FormMessage />
                 </div>
