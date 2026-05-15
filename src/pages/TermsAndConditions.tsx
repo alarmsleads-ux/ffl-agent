@@ -11,9 +11,9 @@ const TermsAndConditions: React.FC = () => {
 
         <p className="text-sm text-muted-foreground leading-relaxed">
           These Terms and Conditions ("Terms") govern your access to and use of services provided by
-          CG Financial ("we," "us," or "our"), operated by Christopher W Garness, including our
-          website, forms, phone, email, and SMS communications. By accessing our website or
-          submitting your information, you agree to these Terms.
+          Christopher Garness and CG Financial ("we," "us," or "our"), including our website, forms,
+          phone, email, and SMS communications. By accessing our website or submitting your
+          information, you agree to these Terms.
         </p>
 
         <section className="space-y-3">
